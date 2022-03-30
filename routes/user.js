@@ -1,17 +1,44 @@
 const { Router } = require('express');
+const { check } = require('express-validator');
+
+const { validarCampos } = require('../middlewares/validar-campos');
+const { validRoles, emailValidator, userExistingId } = require('../helpers/db-validator');
+
 const { usersGet, 
         usersPut, 
         usersPost, 
-        usersDelete } = require('../controllers/user');
+        usersDelete,
+        usersPatch } = require('../controllers/user');
+
+
 
 const router = Router();
 
 router.get('/', usersGet);
 
-router.put('/:id', usersPut);
+router.put('/:id', [
+        check('id', 'No es un ID válido').isMongoId(),
+        check('id').custom( userExistingId ),
+        check('role').custom( validRoles ),
+        validarCampos
+], usersPut);
 
-router.post('/', usersPost);
+router.post('/', [//arreglo de middlewares express-validator
+        check('name', 'El nombre es obligatorio').not().isEmpty(),
+        check('email', 'El correo ingresado no es válido').isEmail(),
+        check('email').custom( emailValidator ),
+        check('password', 'La contraseña es obligatoria y debe contener un mínimo de 8 caracteres').isLength({ min: 8 }),
+        //check('role', 'No es un rol válido').isIn(['ADMIN_ROLE', 'USER_ROLE']),
+        check('role').custom( validRoles ), //recibe el valor a evaluar del body en este caso el rol
+        validarCampos //middleware propio
+], usersPost);
 
-router.delete('/', usersDelete);
+router.delete('/:id', [
+        check('id', 'No es un ID válido').isMongoId(),
+        check('id').custom( userExistingId ),
+        validarCampos
+], usersDelete);
+
+router.patch('/', usersPatch)
 
 module.exports = router;
