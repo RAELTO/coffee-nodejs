@@ -35,8 +35,11 @@ const UserSchema = Schema({
 
 //metodos para editar o personalizar el Schema
 UserSchema.methods.toJSON = function(){
-    const { __v, password, ...user } = this.toObject();/*genera la instancia como objeto literal de JS y saca 
+    const { __v, password, _id, ...user } = this.toObject();/*genera la instancia como objeto literal de JS y saca 
     el __v y el password y almacena el resto en user*/
+
+    user.uid = _id; //muestra el _id como uid en las res, (_id se extrae previamente)
+
     return user;
 }//debe ser una funcion normal en este caso por usar el this
 

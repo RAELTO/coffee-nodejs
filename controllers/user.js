@@ -4,7 +4,7 @@ const bcryptjs = require('bcryptjs');
 const User = require('../models/user');
 
 
-const usersGet = async(req, res) => {
+const usersGet = async(req = request, res = response) => {
 
     const { limit = 5, from = 0 } = req.query;//argumentos opcionales del query
     const query = {status: true};
@@ -24,7 +24,7 @@ const usersGet = async(req, res) => {
 
 }
 
-const usersPost = async(req, res) => {
+const usersPost = async(req, res = response) => {
 
     const { name, email, password, role } = req.body;
     const user = new User({ name, email, password, role });
@@ -43,7 +43,7 @@ const usersPost = async(req, res) => {
 
 }
 
-const usersPut = async(req, res) => {
+const usersPut = async(req, res = response) => {
 
     const { id } = req.params;
     const { _id, password, google, email, ...remainData } = req.body; 
@@ -53,13 +53,13 @@ const usersPut = async(req, res) => {
         remainData.password = bcryptjs.hashSync( password, salt );//encriptacion de una sola via
     }
 
-    const user = await User.findByIdAndUpdate( id, remainData );
-
+    const user = await User.findByIdAndUpdate( id, remainData, {new: true}/*retorna el usuario actualizado*/ );
+    // si no se pone el {new: true} regresa el usuario como estaba antesde actualizarse
     res.json(user);
 
 }
 
-const usersPatch = (req, res) => {
+const usersPatch = (req, res = response) => {
 
     res.json({
         msg: 'patch API - Controller'
@@ -67,20 +67,17 @@ const usersPatch = (req, res) => {
 
 }
 
-const usersDelete = async(req, res) => {
+const usersDelete = async(req, res = response) => {
 
     const { id } = req.params;
 
-    // Borrado directo
-    //const user = await User.findByIdAndDelete(id);
-    //no es bueo borrar los usuarios totalmente de la coleccion para dejar registro de cambios hechos por estos usuarios
+    const uid = req.uid;
 
     const user = await User.findByIdAndUpdate(id, { status: false });
 
     res.json({
         msg: `User with id: ${id}, has been deleted succesfully`,
         user
-        
     });
 
 }
