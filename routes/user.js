@@ -44,7 +44,7 @@ router.post('/', [//arreglo de middlewares express-validator
 router.delete('/:id', [
         valJWT,//si este da error no ejecutara el resto, por eso este middleware debe ser el primero en ejecutarse
         adminRole,//este middleware obliga a que sea admin
-        hasRole('ADMIN_ROLE', 'SALES_ROLE', 'OTRO_ROLE'), //este dice que puede cualquiera de los roles especificados
+        hasRole('ADMIN_ROLE', 'SALES_ROLE', 'ANOTHER_ROLE'), //este dice que puede cualquiera de los roles especificados
         check('id', 'No es un ID válido').isMongoId(),
         check('id').custom( userExistingId ),
         valFields
