@@ -38,7 +38,7 @@
             const body = { id_token: response.credential };
             
             //a la peticion fetch se le debe espicificar el metodo o tipo sino por defecto lo toma como GET 
-            fetch('http://localhost:8080/api/auth/google', {//segundo argumento o configuracion
+            fetch('https://coffee-node.herokuapp.com/api/auth/google', {//segundo argumento o configuracion
                 method: 'POST',
                 headers: {
                     'Content-Type':'application/json'
