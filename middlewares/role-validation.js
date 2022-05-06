@@ -6,7 +6,7 @@ const adminRole = (req, res = response, next) => {
     if (!req.user) {
         return res.status(500).json({
             
-            msg: 'Validar el token primero para verificxar rol'
+            msg: 'Validar el token primero para verificar rol'
 
         });
     }
